@@ -1,6 +1,6 @@
 <template>
 <div class="menu">
-  <div class="logo">Elment-UI</div>
+  <div class="logo">Elment-UI Learning</div>
   <el-menu
     default-active="2"
     @open="handleOpen"
@@ -51,12 +51,17 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.menu {
+  height: 100%;
+  width: 250px;
+  background-color: rgb(50, 64, 78);
+}
 .logo {
   width: 250px;
-  height: 65px;
   background-color: #409eff;
   color: #fff;
   text-align: center;
   font-size: 16px;
+  padding: 22px 0px;
 }
 </style>
