@@ -2,29 +2,30 @@
 <div class="menu">
   <div class="logo">Elment-UI Learning</div>
   <el-menu
+    router
     default-active="2"
     @open="handleOpen"
     @close="handleClose"
     background-color="#32404e"
     text-color="#adb3b8"
     active-text-color="#ffd04b">
-    <el-menu-item index="1">
+    <el-menu-item index="dashboard">
       <i class="el-icon-menu"></i>
       <span slot="title">Dashboard</span>
     </el-menu-item>
-    <el-menu-item index="2">
+    <el-menu-item index="profile">
       <i class="el-icon-menu"></i>
       <span slot="title">Profile</span>
     </el-menu-item>
-    <el-menu-item index="3">
+    <el-menu-item index="pages">
       <i class="el-icon-document"></i>
       <span slot="title">Pages</span>
     </el-menu-item>
-    <el-menu-item index="4">
+    <el-menu-item index="forms">
       <i class="el-icon-setting"></i>
       <span slot="title">Forms</span>
     </el-menu-item>
-    <el-menu-item index="4">
+    <el-menu-item index="tables">
       <i class="el-icon-setting"></i>
       <span slot="title">Tables</span>
     </el-menu-item>
