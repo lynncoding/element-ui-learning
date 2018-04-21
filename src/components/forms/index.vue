@@ -1,8 +1,16 @@
 <template>
-  <div class="hello">
-    <div>
-      <multiple-cascader :options="options" :values="values"></multiple-cascader>
-    </div>
+  <div>
+    <el-row>
+      <el-col :span="12">
+        <div class="form-items">
+          <div class="title">multiple Cascader</div>
+          <div class="content"><multiple-cascader :options="options" :values="values"></multiple-cascader></div>
+        </div>
+      </el-col>
+      <el-col :span="12">
+        <div class="form-items"></div>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -12,10 +20,9 @@ export default {
   components: {
     multipleCascader
   },
-  name: 'Dashboard',
   data () {
     return {
-      values: ['yizhi'],
+      values: [],
       options: [{
         value: 'zhinan',
         label: '指南',
@@ -35,29 +42,26 @@ export default {
             value: 'kekong',
             label: '可控'
           }]
-        }, {
-          value: 'daohang',
-          label: '导航',
-          children: [{
-            value: 'cexiangdaohang',
-            label: '侧向导航'
-          }, {
-            value: 'dingbudaohang',
-            label: '顶部导航'
-          }]
         }]
       }]
     }
-  },
-  methods: {
-
-  },
-  computed: {
-
   }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style lang="less">
+.form-items {
+  margin-right: 20px;
+  height: 350px;
+  background-color: #fff;
+}
+.title {
+  padding: 20px;
+  background-color: #9cc96b;
+  color: #fff;
+}
+.content {
+  padding: 10px;
+}
 </style>
+
