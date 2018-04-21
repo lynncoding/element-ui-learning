@@ -1,6 +1,6 @@
 <template>
-  <span class="multiple-cascader">
-    <el-select v-model="selectedValues" multiple placeholder="请选择" ref="select" popper-class="multiple-cascader-popper">
+  <span class="multiple-cascader el-cascader" v-clickoutside="handleClickoutside">
+    <el-select @focus="handleFocus" v-model="selectedValues" multiple placeholder="请选择" ref="select" popper-class="multiple-cascader-popper">
       <el-option
         v-for="item in selectOptions"
         :key="item.value"
@@ -9,7 +9,7 @@
       </el-option>
     </el-select>
     <el-collapse-transition>
-      <div v-show="mounted&&$refs.select.visible" @click="stop">
+      <div v-show="menuVisible" @click="handleClick">
         <ul class="multiple-cascader-ul">
           <li class="multiple-cascader-li" v-for="item in options" :key="item.value" @mouseover="hoverRootNode(item)">
             <el-checkbox :indeterminate="isIndeterminate">{{item.label}}</el-checkbox>
@@ -22,7 +22,10 @@
         </ul>
         <ul v-show="showThirdMenu" class="multiple-cascader-ul">
           <li class="multiple-cascader-li" v-for="thirdLevelNode in thirdLevelNodes" :key="thirdLevelNode.value">
-            <el-checkbox :value="checkValue(thirdLevelNode.value)" :label="thirdLevelNode.label">{{thirdLevelNode.label}}</el-checkbox>
+            <el-checkbox
+            >
+              {{thirdLevelNode.label}}
+            </el-checkbox>
           </li>
         </ul>
       </div>
@@ -31,37 +34,36 @@
 </template>
 
 <script>
-  // TODO: 监听checkbox的全选半选状态, 第三级节点数据绑定到el-select中
+  import Clickoutside from 'element-ui/src/utils/clickoutside';
   export default {
+    directives: { Clickoutside },
     props: {
-      options: Array
+      options: Array,
+      values: Array
     },
     data () {
       return {
         selectedValues: [],
-        visible: false,
+        menuVisible: false,
         mounted: false,
         secondLevelNodes: [],
         thirdLevelNodes: [],
         showSecondMenu: false,
         showThirdMenu: false,
         isIndeterminate: false,
-        selectOptions: [{
-          label: '技能组11',
-          value: 3
-        }, {
-          label: '技能组12',
-          value: 4
-        }, {
-          label: '技能组13',
-          value: 5
-        }]
+        selectOptions: []
 
       }
     },
     methods: {
-      stop () {
-        this.$refs.select.visible = true
+      handleClick () {
+        this.$refs.select.focus();
+      },
+      handleFocus() {
+        this.menuVisible = true
+      },
+      handleBlur() {
+        this.menuVisible = false
       },
       hoverRootNode (item) {
         this.showSecondMenu = true
@@ -71,10 +73,17 @@
         this.showThirdMenu = true
         this.thirdLevelNodes = item.children
       },
-      checkValue (value) {
-        console.log(value)
-        return !!~this.selectedValues.indexOf(value)
+      handleClickoutside() {
+        this.menuVisible = false;
       }
+    },
+    watch: {
+      menuVisible(value) {
+        if(!value) {
+          this.showSecondMenu = false
+          this.showThirdMenu = false
+        }
+      },
     },
     computed: {
     },
@@ -86,12 +95,17 @@
 <style lang="less">
 .multiple-cascader-popper {
   display: none !important;
+  background-color: #fff;
 }
 .multiple-cascader {
+  display: inline-block;
+  position: relative;
   .multiple-cascader-ul {
+    margin-top: 10px;
     padding: 0px;
     float: left;
     list-style: none;
+    background-color: #fff;
     border: 1px solid #e4e8f1;
     width: 150px;
     height: 200px;

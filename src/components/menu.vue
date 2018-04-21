@@ -29,6 +29,10 @@
       <i class="el-icon-setting"></i>
       <span slot="title">Tables</span>
     </el-menu-item>
+    <el-menu-item index="widgets">
+      <i class="el-icon-setting"></i>
+      <span slot="title">Widgets</span>
+    </el-menu-item>
   </el-menu>
 </div>
 </template>
