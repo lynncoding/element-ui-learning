@@ -4,7 +4,23 @@
       <el-col :span="12">
         <div class="form-items">
           <div class="title">multiple Cascader</div>
-          <div class="content"><multiple-cascader :options="options" :values="values"></multiple-cascader></div>
+          <div class="content">
+            <multiple-cascader :options="options" :values="values"></multiple-cascader>
+            <el-cascader
+              expand-trigger="hover"
+              :options="options"
+              v-model="selectedOptions2">
+            </el-cascader>
+            <el-cascader-modified
+              :options="options"
+              :show-all-levels="false"
+              expand-trigger="hover"
+              change-on-select
+              v-model="val"
+              multiple
+              show-values
+            ></el-cascader-modified>
+          </div>
         </div>
       </el-col>
       <el-col :span="12">
@@ -16,12 +32,15 @@
 
 <script>
 import multipleCascader from './multiple_cascader.vue'
+import ElCascader from './el-cascader/main'
 export default {
   components: {
-    multipleCascader
+    multipleCascader,
+    ElCascader
   },
   data () {
     return {
+      val: [],
       values: [],
       options: [{
         value: 'zhinan',
@@ -42,8 +61,19 @@ export default {
             value: 'kekong',
             label: '可控'
           }]
+        }, {
+          value: 'kaifazhinan',
+          label: '开发指南',
+          children: [{
+            value: 'anzhuang',
+            label: '安装'
+          }, {
+            value: 'guojihua',
+            label: '国际化'
+          }]
         }]
-      }]
+      }],
+      selectedOptions2: []
     }
   }
 }

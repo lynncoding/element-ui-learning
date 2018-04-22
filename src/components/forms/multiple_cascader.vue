@@ -8,29 +8,32 @@
         :value="item.value">
       </el-option>
     </el-select>
-    <el-collapse-transition>
+    <el-collapse-transition class="multiple-cascader-menus">
       <div v-show="menuVisible" @click="handleClick">
         <div v-if="options&&options.length>0">
           <ul class="multiple-cascader-ul">
             <li class="multiple-cascader-li" v-for="item in options" :key="item.value" @mouseover="hoverRootNode(item)">
-              <el-checkbox :indeterminate="true" @change="changeCheckbox">{{item.label}}</el-checkbox>
+              <el-checkbox :indeterminate="isIndeterminate" @change="changeCheckbox">{{item.label}}</el-checkbox>
             </li>
           </ul>
           <ul v-show="showSecondMenu" class="multiple-cascader-ul">
+            <el-checkbox-group v-model="secondCheckedValues">
             <li class="multiple-cascader-li" v-for="secondLevelNode in secondLevelNodes" :key="secondLevelNode.value" @mouseover="hoverSecondNode(secondLevelNode)">
-              <el-checkbox @change="changeCheckbox">{{secondLevelNode.label}}</el-checkbox>
+              <el-checkbox :label="secondLevelNode.value" :ref="secondLevelNode.value">{{secondLevelNode.label}}</el-checkbox>
             </li>
+            </el-checkbox-group>
           </ul>
           <ul v-show="showThirdMenu" class="multiple-cascader-ul">
+            <el-checkbox-group v-model="thirdCheckedValues">
             <li class="multiple-cascader-li" v-for="thirdLevelNode in thirdLevelNodes" :key="thirdLevelNode.value">
               <el-checkbox
-                :value="checkValue(thirdLevelNode.value)"
                 @input="check(thirdLevelNode)"
-                @change="changeCheckbox"
+                :label="thirdLevelNode.value"
               >
                 {{thirdLevelNode.label}}
               </el-checkbox>
             </li>
+            </el-checkbox-group>
           </ul>
         </div>
         <div class="empty-panel" v-else>没有数据</div>
@@ -40,7 +43,7 @@
 </template>
 
 <script>
-  import Clickoutside from 'element-ui/src/utils/clickoutside'
+import Clickoutside from 'element-ui/src/utils/clickoutside'
 export default {
     directives: { Clickoutside },
     props: {
@@ -60,6 +63,8 @@ export default {
     },
     data () {
       return {
+        secondCheckedValues: [],
+        thirdCheckedValues: [],
         selectValues: [],
         selectOptions: [{
           value: 'xiaolv',
@@ -105,6 +110,7 @@ export default {
         this.menuVisible = false
       },
       hoverRootNode (item) {
+        let options = this.options
         this.showSecondMenu = true
         this.secondLevelNodes = item.children
       },
@@ -128,12 +134,37 @@ export default {
         }
       },
       changeCheckbox (val, e) {
+        // debugger
+        let options = this.options
+        let secondCheckedValues = []
+        let thirdCheckedValues = []
+        this.options[0].children.forEach((item) => {
+          secondCheckedValues.push(item.value)
+          item.children.forEach((leafItem) => {
+            thirdCheckedValues.push(leafItem.value)
+          })
 
+        })
+        //TODO: 更新checkbox本身的indeterminate，以及子节点对应的checkbox选中状态
+        this.isIndeterminate = false
+        if(val) {
+          this.secondCheckedValues = secondCheckedValues
+          this.thirdCheckedValues = thirdCheckedValues
+          thirdCheckedValues.forEach((value) => {
+            if(this.selectValues.indexOf(value) < 0) {
+              this.selectValues.push(value)
+            }
+          })
+        } else {
+          this.secondCheckedValues = []
+          this.thirdCheckedValues = []
+        }
       }
     },
     computed: {
     },
     mounted () {
+      let a = this.menuVisible
       this.mounted = true
     }
   }

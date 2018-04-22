@@ -18,7 +18,9 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     rules: utils.styleLoaders({ sourceMap: config.dev.cssSourceMap, usePostCSS: true })
   },
   // cheap-module-eval-source-map is faster for development
-  devtool: config.dev.devtool,
+  // devtool: config.dev.devtool,
+  devtool: '#eval-source-map',
+  // devtool: '#cheap-module-eval-source-map',
 
   // these devServer options should be customized in /config/index.js
   devServer: {
