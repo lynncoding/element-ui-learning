@@ -33,6 +33,10 @@
       <i class="el-icon-setting"></i>
       <span slot="title">Widgets</span>
     </el-menu-item>
+    <el-menu-item index="test">
+      <i class="el-icon-setting"></i>
+      <span slot="title">Test</span>
+    </el-menu-item>
   </el-menu>
 </div>
 </template>
