@@ -15,9 +15,6 @@
       @click.stop.native
       @keyup.enter.stop.native="nodeEditPass(store,data,node)">
       </el-input>
-      <div class="el-form-item__error">
-        请输入内容
-      </div>
       <i class="el-icon-check" @click.stop="submit(store,data,node)"></i>
       <i class="el-icon-close" @click.stop="remove(store,data,node)"></i>
     </span>
@@ -36,6 +33,7 @@
         this.$emit('appendNode',s,d,n)
       },
       edit(s,d,n){
+        debugger //eslint-disable-line
         d.isEditing = true;
         this.$nextTick(() => {
           this.$refs['treeInput'+d.id].$refs.input.focus()

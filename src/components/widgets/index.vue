@@ -31,46 +31,37 @@ export default {
         id: 1,
         value: 'album',
         label: 'Album',
-        isEditing: false,
         children: [{
           id: 2,
-          isEditing: false,
           value: '1989',
           label: '1989',
           children: [{
             id: 3,
-            isEditing: false,
             value: 'blankSpace',
             label: 'Blank Space'
           }, {
             id: 4,
-            isEditing: false,
             value: 'style',
             label: 'Style'
           }, {
             id: 5,
-            isEditing: false,
             value: 'outOfTheWoods',
             label: 'Out Of the Woods'
           }, {
             id: 6,
-            isEditing: false,
             value: 'shakeItOff',
             label: 'Shake It Off'
           }]
         }, {
           id: 7,
-          isEditing: false,
           value: 'reputation',
           label: 'Reputation',
           children: [{
             id: 8,
-            isEditing: false,
             value: 'delicate',
             label: 'Delicate'
           }, {
             id: 9,
-            isEditing: false,
             value: 'endGame',
             label: 'End Game'
           }]
@@ -78,6 +69,22 @@ export default {
       }],
       selectedOptions2: []
     }
+  },
+  created () {
+    let options = this.options
+    const traverse = function(options) {
+      options.forEach(option => {
+        option.isEditing = false
+        if(option.children) {
+          traverse(option.children)
+        }
+      });
+    }
+    traverse(this.options)
+    console.log(this.options);
+  },
+  methods: {
+
   }
 }
 </script>

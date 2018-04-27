@@ -218,10 +218,7 @@
                           }}
                           {...events}
                       >
-                          <span class=""> {item.label} </span>
-                          { selected
-                              ? (<i class='el-icon-check'></i>)
-                              : null }
+                      <el-checkbox v-model="selected"><span class=""> {item.label} </span></el-checkbox>
                       </li>
                   );
               });
