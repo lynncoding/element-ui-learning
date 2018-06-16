@@ -6,11 +6,11 @@ import router from './router'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import '../static/css/init.css'
-import Cascader from 'element-cascader-modified';
-import 'element-cascader-modified/dist/static/css/index.css';
+import Cascader from 'element-cascader-modified'
+import 'element-cascader-modified/dist/static/css/index.css'
+import './mock' // simulation data
 
-Vue.component(Cascader.name, Cascader);
-
+Vue.component(Cascader.name, Cascader)
 Vue.use(ElementUI)
 Vue.config.productionTip = false
 
