@@ -37,6 +37,10 @@
       <i class="el-icon-setting"></i>
       <span slot="title">Test</span>
     </el-menu-item>
+    <el-menu-item index="charts">
+      <i class="el-icon-setting"></i>
+      <span slot="title">Charts</span>
+    </el-menu-item>
   </el-menu>
 </div>
 </template>

@@ -5,6 +5,7 @@ import Forms from '@/components/forms/index.vue'
 import Tables from '@/components/tables/index.vue'
 import Widgets from '@/components/widgets/index.vue'
 import Test from '@/components/test/index.vue'
+import Charts from '@/components/charts/index.vue'
 
 Vue.use(Router)
 
@@ -39,6 +40,11 @@ export default new Router({
       path: '/test',
       name: 'Test',
       component: Test
+    },
+    {
+      path: '/charts',
+      name: 'Charts',
+      component: Charts
     }
   ]
 })
