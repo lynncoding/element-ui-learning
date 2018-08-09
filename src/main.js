@@ -8,7 +8,8 @@ import 'element-ui/lib/theme-chalk/index.css'
 import '../static/css/init.css'
 import Cascader from 'element-cascader-modified'
 import 'element-cascader-modified/dist/static/css/index.css'
-import './mock' // simulation data
+import './mock'
+import LyElementLearning from 'ly-element-learning'
 
 Vue.component(Cascader.name, Cascader)
 Vue.use(ElementUI)

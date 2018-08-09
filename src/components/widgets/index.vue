@@ -10,7 +10,10 @@
         </div>
       </el-col>
       <el-col :span="12">
-        <div class="items"></div>
+        <div class="title">Dynamic list</div>
+          <div class="content">
+            <div class="dynamic-list"></div>
+          </div>
       </el-col>
     </el-row>
   </div>
@@ -102,6 +105,11 @@ export default {
 }
 .content {
   padding: 10px;
+}
+.dynamic-list {
+  width: 200px;
+  height: 400px;
+  border: 1px solid gray
 }
 </style>
 

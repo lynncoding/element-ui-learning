@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="echarts">
     <div>
         <el-date-picker
         style="margin-bottom: 20px"
@@ -24,7 +24,7 @@ export default {
       id: 'chart',
       chart: null,
       width: '100%',
-      height: '500px'
+      height: '100%'
     }
   },
   watch: {
@@ -32,7 +32,6 @@ export default {
         handler (val) {
             let aa  = this.getTimescales(val, 'season')
             //根据控件所选时间范围，算出时间范围内每一个时间刻度
-            console.log(6666666666, aa)
         },
         immediate: true
       }
@@ -48,6 +47,15 @@ export default {
         ['alibaba', 34, 56, 71, 45, 77]
     ]
     this.initChart(chartData)
+    if(this.chart) {
+        setTimeout(() => {
+            window.onresize = () => {
+                console.log(6666, window.innerHeight)
+                this.chart.resize();
+            }
+        }, 100)
+  
+    }
   },
   beforeDestroy() {
     if (!this.chart) {
@@ -93,13 +101,14 @@ export default {
         return date.getFullYear() + '-' + 'Q' + quarter
     },
     getDatafromApi () {
-        return [
+        // TODO: 数据处理直接填充后端返回数据，
+        let apidata = [
             {time: '2018-01-01', type: 1, number: 23},
-            {time: '2018-01-01', type: 2, number: 33},
+            // {time: '2018-01-01', type: 2, number: 33},
             {time: '2018-01-01', type: 3, number: 66},
             {time: '2018-01-01', type: 4, number: 29},
             {time: '2018-01-01', type: 5, number: 25},
-            {time: '2018-01-02', type: 1, number: 23},
+            // {time: '2018-01-02', type: 1, number: 23},
             {time: '2018-01-02', type: 2, number: 33},
             {time: '2018-01-02', type: 3, number: 66},
             {time: '2018-01-02', type: 4, number: 29},
@@ -120,6 +129,20 @@ export default {
             {time: '2018-01-05', type: 4, number: 29},
             {time: '2018-01-05', type: 5, number: 77}
         ]
+        let filleddate = this.filldate(apidata)
+        return []
+    },
+    filldate (sourcedata, timeFields) {
+        const queryParams = {
+            starttime: '2018-01-01',
+            endtime: '2018-01-05',
+            timeDim: 'day' //day, month, quarter, hour
+        }
+        // let timescales = this.getTimescales([queryParams.starttime, queryParams.endtime])
+        if(sourcedata.length < 0) return
+        let model = sourcedata[0]
+        
+
     },
     getChartData (data) {
         const dim = ['', 'baidu', 'google', 'tencent', 'alibaba']
@@ -204,3 +227,18 @@ export default {
   }
 }
 </script>
+<style lang="less">
+.echarts {
+    height:70vh;
+    position: relative;
+    .chart {
+        position: absolute;
+        right: 0;
+        left: 0;
+        padding: 10px;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+}
+</style>
+

@@ -24,7 +24,12 @@
         </div>
       </el-col>
       <el-col :span="12">
-        <div class="form-items"></div>
+  <el-table :data="tableData" border style="width: 100%">
+    <el-table-column prop="age" label="Age" sortable :sort-method=test width="180">
+    </el-table-column>
+    <el-table-column prop="name" sortable label="Name" width="180">
+    </el-table-column>
+  </el-table>
       </el-col>
     </el-row>
   </div>
@@ -91,8 +96,31 @@ export default {
           }]
         }]
       }],
+     tableData: [{
+          age: '33%',
+          name: 'Tom 3'
+        }, {
+          age: '7.8%',
+          name: 'Tom 2'
+        }, {
+          age: '44%',
+          name: 'Tom 4'
+        }, {
+          age: '66%',
+          name: 'Tom 6'
+        }],
       selectedOptions2: []
     }
+  },
+  methods: {
+      formatter(row, column) {
+        return row.address + '*';
+      },
+      test: function(a,b){
+        console.log(a.age.slice(0, -1))
+        // return parseInt(a.age.split('%')[0]) > parseInt(b.age.split('%')[0]);
+        return parseInt(a.age.slice(0, -1)) > parseInt(b.age.slice(0, -1))
+      }
   }
 }
 </script>
