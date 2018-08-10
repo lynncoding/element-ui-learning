@@ -2,11 +2,11 @@
     <div class="editable-list">
         <div class="list">
             <ul>
-                <li :class="{'is-active': item.isActive}" v-for="(item, index) in listData" :key="index" @click="showItem(item, index)">
-                    <el-button title="上移一行" :disabled="index===0" icon="el-icon-arrow-up" size="mini" @click.stop="moveUp(item, index)" circle></el-button>
-                    <el-button title="下移一行" :disabled="index===listData.length-1" icon="el-icon-arrow-down" size="mini" @click.stop="moveDown(item, index)" circle></el-button>
-                    <span>{{item.name || '请输入...'}}</span>
-                    <el-button icon="el-icon-close" class="list-delete-icon" type="danger" size="mini" @click.stop="deleteItem(item, index)" circle></el-button>
+                <li :class="{'is-active': index===activeIndex, 'moving-item': true}" :style="{ top: (item.position * 42) + 'px'}" v-for="(item, index) in listData" :key="index" @click="showItem(item, index)">
+                    <el-button title="上移一行" :disabled="item.position===0" icon="el-icon-arrow-up" size="mini" @click.stop="moveUp(item, index)" circle></el-button>
+                    <el-button title="下移一行" :disabled="item.position===listData.length-1" icon="el-icon-arrow-down" size="mini" @click.stop="moveDown(item, index)" circle></el-button>
+                    <span>{{item.name}}</span>
+                    <el-button icon="el-icon-close" v-show="item.name" class="list-delete-icon" type="danger" size="mini" @click.stop="deleteItem(item, index)" circle></el-button>
                 </li>
             </ul>
         <div class="bottom-bar" :class="{'is-disabled': listData.length>=maxLength }" @click="addItem"><i class="el-icon-plus"></i>添加质检项</div>
@@ -89,6 +89,7 @@ export default {
         let finalList = JSON.parse(JSON.stringify(this.listData))
         finalList.map(item => {
           delete item['isValid']
+          delete item['position']
         })
         this.$emit('input', finalList)
       },
@@ -97,41 +98,17 @@ export default {
   },
   mounted () {
     if (this.value && this.value.length === 0) {
-      this.listData = [{name: '', summary: '', weight: '', isActive: true, isValid: true}]
+      this.listData = [{name: '', summary: '', weight: '', position: 0, isValid: true}]
     } else {
       this.listData = this.value.map((item, index) => {
-        item.isValid = index
-        item.isActive = false
-
+        item.position = index
       })
       this.listData = this.value
     }
-    this.listData[0].isActive = true
     this.itemFormData = this.listData[0]
   },
 
   methods: {
-    setInitItem () {
-      if(this.listData.length === 0) {
-        this.listData.push({name: '', summary: '', weight: '', isActive: true, isValid: true})
-        this.$refs.itemName.focus()
-        this.$refs.qcItemform.resetFields()
-      }
-    },
-    setActiveItem (activeIndex) {
-      if(this.listData.length > 0) {
-        this.listData.map((item, index) => {
-          if(activeIndex === index) {
-            item.isActive = true
-          } else {
-            item.isActive = false
-          }
-          this.itemFormData = this.listData[activeIndex]
-        })
-      } else {
-        this.setInitItem()
-      }
-    },
     validateItemForm () {
       // 切换质检项，表单被重新填值，如果切换前的质检项有空值，将表单状态标记为验证失败
       const hasNullProp = this.listData.some(item => !item.name || !item.summary || !item.weight)
@@ -151,8 +128,9 @@ export default {
       this.$refs.qcItemform.validate(valid => {
         try {
           if (valid) {
-            this.listData.push({name: '', summary: '', weight: '', isActive: true, isValid: false})
-            this.setActiveItem(this.listData.length - 1)
+            this.listData.push({name: '', summary: '', weight: '', position: this.listData.length, isValid: false})
+            this.activeIndex = this.listData.length - 1
+            this.itemFormData = this.listData[this.activeIndex]
             this.$refs.itemName.focus()
           }
         } catch (err) {
@@ -161,48 +139,71 @@ export default {
       })
     },
     moveUp (item, index) {
-      this.$refs.qcItemform.validate(valid => {
-        try {
-          if (valid) {
-            this.listData.splice(index, 1)
-            if (index - 1 >= 0) {
-              this.listData.splice(index - 1, 0, item)
-            }
-          }
-        } catch (err) {
-          console.log(err)
+      const destination = item.position - 1
+      if (destination < 0) {
+        return
+      }
+      let newList = JSON.parse(JSON.stringify(this.listData))
+      newList.forEach(qcItem => {
+        if (qcItem.position === destination) {
+          qcItem.position = qcItem.position + 1
+        }
+        if (JSON.stringify(item) === JSON.stringify(qcItem)) {
+          qcItem.position = destination
         }
       })
+      this.listData = newList
     },
     moveDown (item, index) {
-      this.$refs.qcItemform.validate(valid => {
-        try {
-          if (valid) {
-            this.listData.splice(index, 1)
-            this.listData.splice(index + 1, 0, item)
-          }
-        } catch (err) {
-          console.log(err)
+      const destination = item.position + 1
+      if (destination >= this.listData.length) {
+        return
+      }
+      let newList = JSON.parse(JSON.stringify(this.listData))
+      newList.forEach(qcItem => {
+        if (qcItem.position === destination) {
+          qcItem.position = qcItem.position - 1
+        }
+        if (JSON.stringify(item) === JSON.stringify(qcItem)) {
+          qcItem.position = destination
         }
       })
+      this.listData = newList
     },
     showItem (item, index) {
       // TODO: 切换item时，若有表单未通过验证，如何处理？ 先记住表单未验证的状态
-      // this.validateItemForm()
+      this.validateItemForm()
       this.$refs.itemName.focus()
-      this.setActiveItem(index)
-      this.$refs.qcItemform.validate(valid => {
-        try {
-          if (valid) {
-            this.$refs.qcItemform.clearValidate()
+      this.activeIndex = index
+      this.itemFormData = item
+    },
+    deleteItem1 (item, index) {
+      // TODO: 删除选中项后，定位到第一项，如果没有数据，打开一个空表单, position要改变
+      this.$confirm('删除后无法恢复，你确定要删除吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        let newList = JSON.parse(JSON.stringify(this.listData))
+        newList.splice(index, 1)
+        newList.forEach(qcItem => {
+          if (qcItem.position > item.position) {
+            qcItem.position = qcItem.position - 1
           }
-        } catch (err) {
-          console.log(err)
-        }
+        })
+        this.listData = newList
+        // this.activeIndex = item.position
+        this.$message({
+          type: 'success',
+          duration: 1000,
+          message: '移除成功!'
+        })
+      }).catch(err => {
+        console.log(err)
       })
     },
     resetForm () {
-      this.listData.push({name: '', summary: '', weight: '', isValid: true})
+      this.listData.push({name: '', summary: '', weight: '', position: this.listData.length, isValid: true})
       this.activeIndex = this.listData.length - 1
       this.itemFormData = this.listData[this.activeIndex]
       this.$refs.itemName.focus()
@@ -212,9 +213,15 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
+      }).then(async () => {
         this.listData.splice(index, 1)
-        this.setActiveItem(index - 1 > 0 ? index - 1 : 0)
+        if (this.listData.length === 0) {
+          this.resetForm()
+        } else {
+          this.activeIndex = this.activeIndex - 1
+          this.itemFormData = this.listData[this.activeIndex]
+          this.$refs.itemName.focus()
+        }
         this.$message({
           type: 'success',
           duration: 1000,
@@ -245,6 +252,7 @@ export default {
     overflow-y: auto;
   }
   ul li {
+    position: absolute;
     background-color: #fff;
     box-sizing: border-box;
     width: 100%;

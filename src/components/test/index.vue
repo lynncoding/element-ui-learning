@@ -5,6 +5,9 @@
       show-checkbox>
     </el-tree> -->
     <el-button @click="getData">Test</el-button>
+    <ul style="margin: 10px;">
+      <li v-for="(item, index) in data1" :key="index">{{item.name}}=>{{item.summary}}</li>
+    </ul>
     <editable-list v-model="data1" :maxLength="30"></editable-list>
   </div>
 </template>
@@ -62,6 +65,7 @@ export default {
   },
   methods: {
     getData () {
+
       console.log(this.data1)
     }
   }
