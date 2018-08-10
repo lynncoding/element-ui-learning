@@ -4,6 +4,7 @@
       :data = "options"
       show-checkbox>
     </el-tree> -->
+    <el-button @click="getData">Test</el-button>
     <editable-list v-model="data1" :maxLength="30"></editable-list>
   </div>
 </template>
@@ -57,6 +58,11 @@ export default {
         }]
       }],
       selectedOptions2: []
+    }
+  },
+  methods: {
+    getData () {
+      console.log(this.data1)
     }
   }
 }
